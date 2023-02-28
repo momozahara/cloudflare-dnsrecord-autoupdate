@@ -1,0 +1,7 @@
+dist
+node_modules
+yaml
+up.bat
+.env
+docker-compose.yaml
+realrecord.config.ts
