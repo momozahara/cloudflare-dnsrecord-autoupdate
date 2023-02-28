@@ -6,7 +6,7 @@ A tool use to update dns record on cloudflare to point to your ip useful for tho
 rename [.env.example](/.env.example) -> .env\
 add your ZONE_ID and API_TOKEN from cloudflare api
 
-edit record.config.ts
+edit [record.config.ts](/record.config.ts)
 
 edit interval time in [main.ts](/src/main.ts#L67) to value you like
 
