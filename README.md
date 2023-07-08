@@ -8,7 +8,7 @@ add your ZONE_ID and API_TOKEN from cloudflare api
 
 edit [record.config.ts](/record.config.ts)
 
-edit interval time in [main.ts](/src/main.ts#L67) to value you like
+edit interval time in [main.ts](/src/main.ts#L85) to value you like
 
 ## Usage
 ```
