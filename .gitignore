@@ -1,7 +1,8 @@
 dist
 node_modules
 yaml
-up.bat
+*.bat
+*.sh
 .env
 docker-compose.yaml
 realrecord.config.ts
