@@ -61,15 +61,11 @@ async function updateDns(
 async function firstPoll() {
   MY_IP = await getMyIp();
   record.forEach((item) => {
-    void (async () => {
-      await updateDns(item.type, item.id, item.cname, MY_IP, item.proxy);
-    })();
+    void updateDns(item.type, item.id, item.cname, MY_IP, item.proxy);
   });
 }
 
-void (async () => {
-  await firstPoll();
-})();
+void firstPoll();
 
 setInterval(
   () => {
@@ -79,15 +75,7 @@ setInterval(
         if (MY_IP !== newIp) {
           MY_IP = newIp;
           record.forEach((item) => {
-            void (async () => {
-              await updateDns(
-                item.type,
-                item.id,
-                item.cname,
-                MY_IP,
-                item.proxy,
-              );
-            })();
+            void updateDns(item.type, item.id, item.cname, MY_IP, item.proxy);
           });
         }
       } catch (e) {
