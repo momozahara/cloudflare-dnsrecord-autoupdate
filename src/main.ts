@@ -6,23 +6,23 @@ dotenv.config();
 let MY_IP: string;
 
 async function getMyIp() {
-  let response = await fetch(
+  const response = await fetch(
     "https://cloudflare.com/cdn-cgi/trace?format=json",
   );
 
-  let data = await response.text();
+  const data = await response.text();
 
-  let obj = data
+  const obj = data
     .trim()
     .split("\n")
-    .reduce((acc: { [key: string]: string }, curr) => {
-      let [key, value] = curr.split("=");
+    .reduce((acc: Record<string, string>, curr) => {
+      const [key, value] = curr.split("=");
       acc[key] = value;
       return acc;
       // eslint-disable-next-line object-curly-newline
     }, {});
 
-  return obj["ip"];
+  return obj.ip;
 }
 
 async function updateDns(
@@ -30,14 +30,14 @@ async function updateDns(
   id: string,
   name: string,
   content: string,
-  proxied: boolean = true,
+  proxied = true,
 ) {
-  let headersList = {
-    Authorization: `Bearer ${process.env.API_TOKEN as string}`,
+  const headersList = {
+    Authorization: `Bearer ${process.env.API_TOKEN!}`,
     "Content-Type": "application/json",
   };
 
-  let bodyContent = JSON.stringify({
+  const bodyContent = JSON.stringify({
     type: type,
     content: content,
     name: name,
@@ -45,10 +45,9 @@ async function updateDns(
     proxied: proxied,
   });
 
-  let response = await fetch(
-    `https://api.cloudflare.com/client/v4/zones/${
-      process.env.ZONE_ID as string
-    }/dns_records/${id}`,
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/zones/${process.env
+      .ZONE_ID!}/dns_records/${id}`,
     {
       method: "PUT",
       body: bodyContent,
@@ -62,25 +61,39 @@ async function updateDns(
 async function firstPoll() {
   MY_IP = await getMyIp();
   record.forEach((item) => {
-    updateDns(item.type, item.id, item.cname, MY_IP, item.proxy);
+    void (async () => {
+      await updateDns(item.type, item.id, item.cname, MY_IP, item.proxy);
+    })();
   });
 }
 
-firstPoll();
+void (async () => {
+  await firstPoll();
+})();
 
 setInterval(
-  async () => {
-    try {
-      let newIp = await getMyIp();
-      if (MY_IP !== newIp) {
-        MY_IP = newIp;
-        record.forEach((item) => {
-          updateDns(item.type, item.id, item.cname, MY_IP, item.proxy);
-        });
+  () => {
+    void (async () => {
+      try {
+        const newIp = await getMyIp();
+        if (MY_IP !== newIp) {
+          MY_IP = newIp;
+          record.forEach((item) => {
+            void (async () => {
+              await updateDns(
+                item.type,
+                item.id,
+                item.cname,
+                MY_IP,
+                item.proxy,
+              );
+            })();
+          });
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
+    })();
   },
   1000 * 60 * 60 * 1,
 );
