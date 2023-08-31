@@ -6,9 +6,7 @@ dotenv.config();
 let MY_IP: string;
 
 async function getMyIp() {
-  const response = await fetch(
-    "https://cloudflare.com/cdn-cgi/trace?format=json",
-  );
+  const response = await fetch("https://cloudflare.com/cdn-cgi/trace");
 
   const data = await response.text();
 
