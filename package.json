@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "build": "yarn lint;tsc",
+    "build": "pnpm lint;tsc",
     "start": "node dist/src/index.js",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx,json}\""
   },
