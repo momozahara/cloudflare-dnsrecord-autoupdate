@@ -17,7 +17,7 @@ COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN pnpm build
 
-FROM base
+FROM node:16.17-alpine
 
 WORKDIR /app
 
@@ -25,4 +25,4 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
-CMD [ "pnpm", "start" ]
+CMD [ "node", "dist/src/index.js" ]

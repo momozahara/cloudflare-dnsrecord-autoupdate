@@ -20,6 +20,8 @@ async function getMyIp() {
       // eslint-disable-next-line object-curly-newline
     }, {});
 
+  console.info(`Get IP: ${obj.ip}`);
+
   return obj.ip;
 }
 
